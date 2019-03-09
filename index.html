@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id='root' />
+
+<script>
+
+const numOfRolls = 604
+const limits = {
+  1: false,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: 10,
+  7: 9,
+  8: 8,
+  9: 7,
+  10: 6,
+  11: 5,
+  12: 2,
+}
+
+const getRandomFrom = (myArray) => myArray[Math.floor(Math.random() * myArray.length)];
+  
+  
+  function copyTable() {
+  /* Get the text field */
+  var el = document.getElementById("myTable");
+
+    var body = document.body, range, sel;
+    if (document.createRange && window.getSelection) {
+        range = document.createRange();
+        sel = window.getSelection();
+        sel.removeAllRanges();
+        try {
+            range.selectNodeContents(el);
+            sel.addRange(range);
+        } catch (e) {
+            range.selectNode(el);
+            sel.addRange(range);
+        }
+    } else if (body.createTextRange) {
+        range = body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+    }
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Copied the table to clipboard");
+}
+  
+  
+  
+
+const root = document.querySelector('#root');
+
+function render() {
+  const limitsCopy = {...limits}
+  const fate = [];
+  for (let i = 0; i < numOfRolls; i++) {
+    const possibleRools = Object.keys(limitsCopy);
+    const roll = getRandomFrom(possibleRools)
+    fate.push(roll);
+    if (limitsCopy[roll] !== false) {
+      limitsCopy[roll]--;
+      if ( limitsCopy[roll] === 0 ) { delete limitsCopy[roll]}
+    }
+  }
+  root.innerHTML = `
+    <h1>Hands Of The Gods</h1>
+    <button onclick="render()">Re Roll</button>     <button onclick="copyTable()">copy Table</button>
+    <table id='myTable'>
+      <tr>
+        <th>#</th>
+        <th>Roll</th>
+      </tr>
+      ${fate.map((roll,i)=>{
+      	return `      
+        <tr>
+          <td>${i+1}</td>
+          <td>${roll}</td>
+      </tr>`
+      }).join('')}
+    </table>
+`;
+}
+
+render();
+
+</script>
+
+</body>
+</html>
